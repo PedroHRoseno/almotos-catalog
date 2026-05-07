@@ -2,7 +2,10 @@
 const nextConfig = {
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "**" },
+      // S3 (virtual-hosted e path-style), e CDN comum (CloudFront)
+      { protocol: "https", hostname: "**.amazonaws.com" },
+      { protocol: "https", hostname: "**.amazonaws.com.cn" },
+      { protocol: "https", hostname: "**.cloudfront.net" },
       { protocol: "http", hostname: "localhost" },
     ],
   },
