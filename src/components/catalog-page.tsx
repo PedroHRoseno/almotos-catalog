@@ -5,7 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchPublicVehicles } from "@/lib/api";
 import type { PublicVehicle } from "@/lib/types";
 import { VehicleCard } from "@/components/vehicle-card";
+import { CatalogGridSkeleton } from "@/components/vehicle-card-skeleton";
 import { cn } from "@/lib/utils";
+
+const shellClass =
+  "mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8";
 
 type LoadState =
   | { status: "loading" }
@@ -50,17 +54,24 @@ export function CatalogPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-black dark:text-zinc-50">
-      <header className="sticky top-0 z-20 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-md items-center gap-3 px-4 py-3 bg-white/80 dark:bg-black/60 border-b border-zinc-200/60 dark:border-zinc-800/60">
-          <Image
-            src="/logo.png"
-            alt="Al Motos"
-            width={120}
-            height={40}
-            className="h-10 w-auto object-contain"
-            priority
-          />
-          <div className="ml-auto">
+      <header className="sticky top-0 z-30 border-b border-zinc-200/70 bg-white/85 backdrop-blur-md dark:border-zinc-800/70 dark:bg-black/70">
+        <div
+          className={cn(
+            shellClass,
+            "flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-start sm:gap-8"
+          )}
+        >
+          <div className="flex shrink-0 items-center justify-start">
+            <Image
+              src="/logo.png"
+              alt="Al Motos"
+              width={120}
+              height={40}
+              className="h-9 w-auto object-contain sm:h-10"
+              priority
+            />
+          </div>
+          <div className="flex w-full flex-col items-stretch sm:w-auto sm:items-start">
             <label className="sr-only" htmlFor="brand">
               Filtrar por marca
             </label>
@@ -69,8 +80,8 @@ export function CatalogPage() {
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
               className={cn(
-                "h-10 rounded-md border border-zinc-200 bg-white px-3 text-sm dark:border-zinc-800 dark:bg-zinc-950",
-                "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20"
+                "h-11 w-full min-w-0 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 shadow-sm sm:min-w-[200px] sm:max-w-xs dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50",
+                "focus:outline-none focus:ring-2 focus:ring-zinc-900/25 dark:focus:ring-zinc-50/25"
               )}
             >
               <option value="ALL">Todas as marcas</option>
@@ -84,10 +95,13 @@ export function CatalogPage() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-md px-4 py-4">
+      <main className={cn(shellClass, "py-6 sm:py-8 lg:py-10")}>
         {state.status === "loading" && (
-          <div className="py-10 text-center text-sm text-zinc-500 dark:text-zinc-400">
-            Carregando catálogo…
+          <div className="space-y-4">
+            <p className="text-center text-sm font-medium text-zinc-600 dark:text-zinc-400">
+              Carregando catálogo…
+            </p>
+            <CatalogGridSkeleton count={8} />
           </div>
         )}
 
@@ -104,7 +118,7 @@ export function CatalogPage() {
         )}
 
         {state.status === "ready" && filtered.length > 0 && (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4">
             {filtered.map((v, idx) => (
               <VehicleCard
                 key={`${v.brand}-${v.model}-${v.year}-${idx}`}
