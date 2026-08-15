@@ -8,39 +8,10 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-xl border border-zinc-200 bg-white text-zinc-900 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50",
+        "relative overflow-hidden rounded-card border border-line-soft bg-surface text-ink",
         className
       )}
       {...props}
     />
   );
 }
-
-export function CardHeader({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div className={cn("flex flex-col space-y-1.5 p-4", className)} {...props} />
-  );
-}
-
-export function CardTitle({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLHeadingElement>) {
-  return (
-    <h3
-      className={cn("text-base font-semibold leading-none tracking-tight", className)}
-      {...props}
-    />
-  );
-}
-
-export function CardContent({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-4 pt-0", className)} {...props} />;
-}
-

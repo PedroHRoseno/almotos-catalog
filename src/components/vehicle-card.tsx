@@ -2,34 +2,37 @@
 
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
+import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { PublicVehicle } from "@/lib/types";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { buildWhatsAppLink } from "@/lib/api";
+import { describeColor, formatKm, vehicleImages } from "@/lib/vehicle";
 import { cn } from "@/lib/utils";
 
-function formatKm(km: number) {
-  return new Intl.NumberFormat("pt-BR").format(km);
-}
+type VehicleCardProps = {
+  vehicle: PublicVehicle;
+  /** Prioriza o carregamento das primeiras fotos visíveis (LCP). */
+  priority?: boolean;
+};
 
-export function VehicleCard({ vehicle }: { vehicle: PublicVehicle }) {
+export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
+  const images = vehicleImages(vehicle);
+  const hasMultiple = images.length > 1;
+  const color = describeColor(vehicle.color);
+
   const waLink = useMemo(
     () => buildWhatsAppLink({ model: vehicle.model }),
     [vehicle.model]
   );
 
-  const images = vehicle.imageUrlList?.length
-    ? vehicle.imageUrlList
-    : ["/logo.png"];
-
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: hasMultiple });
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [slidesLoaded, setSlidesLoaded] = useState<Record<number, boolean>>({});
+  const [loadedSlides, setLoadedSlides] = useState<Record<number, boolean>>({});
 
-  const markSlideLoaded = useCallback((idx: number) => {
-    setSlidesLoaded((prev) => (prev[idx] ? prev : { ...prev, [idx]: true }));
+  const markLoaded = useCallback((idx: number) => {
+    setLoadedSlides((prev) => (prev[idx] ? prev : { ...prev, [idx]: true }));
   }, []);
 
   const onSelect = useCallback(() => {
@@ -49,110 +52,132 @@ export function VehicleCard({ vehicle }: { vehicle: PublicVehicle }) {
   return (
     <Card
       className={cn(
-        "group overflow-hidden transition-all duration-300",
-        "hover:-translate-y-1 hover:shadow-xl",
-        "dark:hover:shadow-black/40"
+        "group relative isolate aspect-[4/5] border-line-soft/80 bg-canvas-soft",
+        "transition-[transform,border-color,box-shadow] duration-500 ease-out-expo",
+        "hover:-translate-y-1 hover:border-line hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.9)]"
       )}
     >
-      <div className="relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-        <div ref={emblaRef} className="overflow-hidden">
-          <div className="flex">
-            {images.map((src, idx) => (
-              <div className="min-w-0 flex-[0_0_100%]" key={`${src}-${idx}`}>
-                <div className="relative aspect-[4/3] w-full overflow-hidden">
-                  {idx === selectedIndex && !slidesLoaded[idx] && (
-                    <div
-                      className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-200/90 dark:bg-zinc-800/90"
-                      aria-hidden
-                    >
-                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-400 border-t-transparent dark:border-zinc-500 dark:border-t-transparent" />
-                    </div>
-                  )}
-                  <Image
-                    src={src}
-                    alt={`${vehicle.model} foto ${idx + 1}`}
-                    fill
-                    className={cn(
-                      "object-cover transition-transform duration-500 ease-out",
-                      "md:group-hover:scale-[1.04]"
-                    )}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                    priority={idx === 0}
-                    onLoad={() => markSlideLoaded(idx)}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {images.length > 1 && (
-          <div className="absolute bottom-2 left-0 right-0 flex items-center justify-center gap-1.5">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Ir para imagem ${i + 1}`}
+      <div ref={emblaRef} className="absolute inset-0 overflow-hidden">
+        <div className="flex h-full">
+          {images.map((src, idx) => (
+            <div
+              className="relative h-full min-w-0 flex-[0_0_100%]"
+              key={`${src}-${idx}`}
+            >
+              {!loadedSlides[idx] && (
+                <div className="absolute inset-0 z-10 animate-pulse bg-surface" />
+              )}
+              <Image
+                src={src}
+                alt={`${vehicle.brand} ${vehicle.model} — foto ${idx + 1}`}
+                fill
                 className={cn(
-                  "h-1.5 rounded-full bg-white/50 transition-all",
-                  i === selectedIndex ? "w-4 bg-white" : "w-1.5"
+                  "object-cover transition-transform duration-700 ease-out-expo",
+                  "md:group-hover:scale-[1.06]"
                 )}
-                onClick={() => emblaApi?.scrollTo(i)}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={priority && idx === 0}
+                onLoad={() => markLoaded(idx)}
               />
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
       </div>
 
-      <CardHeader className="space-y-3 pb-2">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-          <CardTitle className="text-lg font-bold leading-snug tracking-tight text-zinc-950 dark:text-zinc-50">
-            {vehicle.model}
-          </CardTitle>
-          <Badge className="shrink-0 self-start border border-zinc-200/80 bg-zinc-900 px-2 py-1 text-[10px] font-semibold uppercase leading-tight tracking-wide text-white sm:text-xs dark:border-zinc-700 dark:bg-zinc-100 dark:text-zinc-900">
-            Condições especiais
-          </Badge>
-        </div>
-      </CardHeader>
+      {/* Gradiente garante leitura do texto sobre qualquer foto */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent opacity-95"
+      />
 
-      <CardContent className="space-y-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={cn(
-              "inline-flex items-center rounded-md border border-zinc-200/90 bg-zinc-100/90 px-2 py-1 text-xs font-medium tabular-nums text-zinc-700",
-              "dark:border-zinc-700/90 dark:bg-zinc-800/80 dark:text-zinc-300"
-            )}
-          >
-            {vehicle.year}
-          </span>
-          <span
-            className={cn(
-              "inline-flex items-center rounded-md border border-zinc-200/90 bg-zinc-100/90 px-2 py-1 text-xs font-medium tabular-nums text-zinc-700",
-              "dark:border-zinc-700/90 dark:bg-zinc-800/80 dark:text-zinc-300"
-            )}
-          >
-            {formatKm(vehicle.kilometersDriven)} km
-          </span>
+      {hasMultiple && (
+        <div className="absolute inset-x-0 top-0 z-20 flex gap-1 p-3">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Ver foto ${i + 1} de ${images.length}`}
+              onClick={() => emblaApi?.scrollTo(i)}
+              className="group/seg h-4 flex-1"
+            >
+              <span
+                className={cn(
+                  "block h-1 w-full rounded-full transition-colors duration-300",
+                  i === selectedIndex
+                    ? "bg-white"
+                    : "bg-white/30 group-hover/seg:bg-white/60"
+                )}
+              />
+            </button>
+          ))}
         </div>
+      )}
 
-        <a
-          href={waLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block w-full lg:flex lg:justify-center"
-        >
+      {hasMultiple && (
+        <div className="pointer-events-none absolute inset-y-0 left-0 right-0 z-20 hidden items-center justify-between px-2 md:flex">
           <Button
-            variant="whatsapp"
-            size="lg"
-            className={cn(
-              "w-full min-h-[44px] px-4 text-sm sm:text-base",
-              "lg:max-w-[min(100%,17rem)] lg:shrink-0"
-            )}
+            variant="glass"
+            size="icon"
+            aria-label="Foto anterior"
+            onClick={() => emblaApi?.scrollPrev()}
+            className="pointer-events-auto size-9 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           >
-            Consultar preço no WhatsApp
+            <ChevronLeft />
           </Button>
-        </a>
-      </CardContent>
+          <Button
+            variant="glass"
+            size="icon"
+            aria-label="Próxima foto"
+            onClick={() => emblaApi?.scrollNext()}
+            className="pointer-events-auto size-9 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          >
+            <ChevronRight />
+          </Button>
+        </div>
+      )}
+
+      <div className="absolute inset-x-0 bottom-0 z-20 space-y-3 p-4 sm:p-5">
+        <p className="font-display text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+          {vehicle.brand}
+        </p>
+
+        <h3 className="font-display text-xl font-extrabold leading-tight tracking-tight text-white sm:text-2xl">
+          {vehicle.model}
+        </h3>
+
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-white/70">
+          <span className="tabular-nums">{vehicle.year}</span>
+          <span aria-hidden className="size-1 rounded-full bg-white/30" />
+          <span className="tabular-nums">{formatKm(vehicle.kilometersDriven)}</span>
+          <span aria-hidden className="size-1 rounded-full bg-white/30" />
+          <span className="inline-flex items-center gap-1.5">
+            {color.swatch && (
+              <span
+                aria-hidden
+                className="size-3 rounded-full border border-white/30"
+                style={{ backgroundColor: color.swatch }}
+              />
+            )}
+            {color.label}
+          </span>
+        </div>
+
+        <Button
+          asChild
+          variant="whatsapp"
+          className="mt-1 w-full min-h-11 text-sm sm:text-base"
+        >
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Consultar preço da ${vehicle.brand} ${vehicle.model} no WhatsApp`}
+          >
+            <MessageCircle />
+            Consultar preço
+          </a>
+        </Button>
+      </div>
     </Card>
   );
 }

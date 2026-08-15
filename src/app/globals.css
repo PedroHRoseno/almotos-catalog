@@ -1,25 +1,92 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Superfícies */
+  --color-canvas: #08080a;
+  --color-canvas-soft: #0d0d11;
+  --color-surface: #131317;
+  --color-surface-hover: #1a1a20;
+  --color-line: #26262e;
+  --color-line-soft: #1b1b21;
+
+  /* Texto */
+  --color-ink: #f6f6f8;
+  --color-ink-muted: #a2a2ad;
+  --color-ink-subtle: #6f6f7a;
+
+  /* Acento */
+  --color-accent: #ff6a2b;
+  --color-accent-hover: #ff8149;
+  --color-accent-ink: #180a03;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-hover: #1fbb59;
+
+  /* Tipografia */
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-syne), var(--font-dm-sans), ui-sans-serif, sans-serif;
+
+  /* Raio */
+  --radius-card: 1.5rem;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-shimmer: shimmer 2s infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Trilho de chips horizontal sem barra de rolagem visível */
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Brilho ambiente do hero — evita o visual "fundo chapado" de dashboard */
+@utility ambient-glow {
+  background-image: radial-gradient(
+    60% 55% at 50% 0%,
+    color-mix(in oklab, var(--color-accent) 18%, transparent) 0%,
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
