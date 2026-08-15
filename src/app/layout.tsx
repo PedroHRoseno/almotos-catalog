@@ -16,11 +16,15 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "Al Motos | Catálogo",
+  title: "AL Motos",
   description:
     "Motos selecionadas, prontas para rodar. Confira o estoque da Al Motos em Caruaru e fale direto com a nossa equipe pelo WhatsApp.",
+  icons: {
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: [{ url: "/logo.png", type: "image/png" }],
+  },
   openGraph: {
-    title: "Al Motos | Catálogo",
+    title: "AL Motos",
     description:
       "Motos selecionadas, prontas para rodar. Confira o estoque da Al Motos em Caruaru.",
     type: "website",
