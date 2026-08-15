@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Syne } from "next/font/google";
+import { AssistantWidget } from "@/components/assistant/assistant-widget";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -48,6 +49,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-canvas text-ink">
         {children}
+        <AssistantWidget />
       </body>
     </html>
   );

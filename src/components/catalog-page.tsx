@@ -18,8 +18,16 @@ type LoadState =
   | { status: "error"; message: string }
   | { status: "ready"; vehicles: PublicVehicle[] };
 
-export function CatalogPage() {
-  const [state, setState] = useState<LoadState>({ status: "loading" });
+export function CatalogPage({
+  initialVehicles,
+}: {
+  initialVehicles?: PublicVehicle[];
+}) {
+  const [state, setState] = useState<LoadState>(
+    initialVehicles
+      ? { status: "ready", vehicles: initialVehicles }
+      : { status: "loading" }
+  );
   const [brand, setBrand] = useState<string>(ALL_BRANDS);
 
   const load = useCallback(() => {
@@ -43,7 +51,10 @@ export function CatalogPage() {
     };
   }, []);
 
-  useEffect(() => load(), [load]);
+  useEffect(() => {
+    if (initialVehicles !== undefined) return;
+    return load();
+  }, [initialVehicles, load]);
 
   const brands = useMemo(() => {
     if (state.status !== "ready") return [];
@@ -120,7 +131,7 @@ export function CatalogPage() {
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             {filtered.map((vehicle, idx) => (
               <BlurFade
-                key={`${vehicle.brand}-${vehicle.model}-${vehicle.year}-${idx}`}
+                key={vehicle.slug || `${vehicle.brand}-${vehicle.model}-${idx}`}
                 delay={Math.min(idx, 8) * 0.06}
                 animateOnScroll={idx > 2}
               >

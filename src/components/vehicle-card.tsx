@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -142,7 +143,9 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
         </p>
 
         <h3 className="font-display text-xl font-extrabold leading-tight tracking-tight text-white sm:text-2xl">
-          {vehicle.model}
+          <Link href={`/motos/${vehicle.slug}`} className="hover:underline">
+            {vehicle.model}
+          </Link>
         </h3>
 
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-white/70">

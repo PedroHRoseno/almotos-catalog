@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { buildWhatsAppLink } from "@/lib/api";
@@ -15,14 +16,16 @@ export function SiteHeader() {
           "flex h-16 items-center justify-between gap-4 sm:h-18"
         )}
       >
-        <Image
-          src="/logo.png"
-          alt="Al Motos"
-          width={132}
-          height={44}
-          className="h-8 w-auto object-contain sm:h-9"
-          priority
-        />
+        <Link href="/" className="shrink-0">
+          <Image
+            src="/logo.png"
+            alt="Al Motos"
+            width={132}
+            height={44}
+            className="h-8 w-auto object-contain sm:h-9"
+            priority
+          />
+        </Link>
 
         <Button asChild variant="outline" size="sm" className="shrink-0">
           <a

@@ -1,15 +1,7 @@
 import type { PublicVehicle } from "@/lib/types";
 
-function getApiBaseUrl() {
-  return (
-    process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, "") ||
-    "http://localhost:8080"
-  );
-}
-
 export async function fetchPublicVehicles(): Promise<PublicVehicle[]> {
-  const url = `${getApiBaseUrl()}/api/public/vehicles`;
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch("/api/catalog/vehicles", { cache: "no-store" });
   if (!res.ok) {
     throw new Error(`Falha ao carregar catálogo (HTTP ${res.status})`);
   }
@@ -26,4 +18,3 @@ export function buildWhatsAppLink(params: { model?: string } = {}) {
   const sep = base.includes("?") ? "&" : "?";
   return `${base}${sep}text=${encodeURIComponent(text)}`;
 }
-
