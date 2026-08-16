@@ -28,7 +28,11 @@ function withSlugs(vehicles: PublicVehicle[]): PublicVehicle[] {
 
 export async function getCatalogVehicles(): Promise<PublicVehicle[]> {
   const ai = process.env.ALMOTOS_AI_URL?.replace(/\/+$/, "");
-  if (ai) {
+  if (!ai) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("ALMOTOS_AI_URL é obrigatória em produção (ADR-003)");
+    }
+  } else {
     const res = await fetch(`${ai}/v1/inventory`, {
       next: { revalidate: 60 },
     });
@@ -55,7 +59,11 @@ export async function getCatalogVehicle(
   slug: string
 ): Promise<PublicVehicle | null> {
   const ai = process.env.ALMOTOS_AI_URL?.replace(/\/+$/, "");
-  if (ai) {
+  if (!ai) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("ALMOTOS_AI_URL é obrigatória em produção (ADR-003)");
+    }
+  } else {
     const res = await fetch(`${ai}/v1/inventory/${encodeURIComponent(slug)}`, {
       next: { revalidate: 60 },
     });
