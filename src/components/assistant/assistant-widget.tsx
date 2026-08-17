@@ -20,10 +20,39 @@ type ToolInvocation = {
   result?: unknown;
 };
 
+function hasCompletedTool(invocations: ToolInvocation[] | undefined, names: string[]) {
+  return Boolean(
+    invocations?.some(
+      (inv) => names.includes(inv.toolName) && inv.state === "result"
+    )
+  );
+}
+
+function looksLikeMarkdownCatalog(content: string) {
+  if (/!\[[^\]]*]\(/.test(content)) return true;
+  if (/\[[^\]]+]\(https?:\/\//.test(content)) return true;
+  return (content.match(/\d+\.\s+\*\*/g)?.length ?? 0) >= 2;
+}
+
+function shouldShowAssistantText(
+  content: string,
+  invocations?: ToolInvocation[]
+) {
+  const text = content.trim();
+  if (!text) return false;
+  const uiAlreadyRendered = hasCompletedTool(invocations, [
+    "searchInventory",
+    "getVehiclePhotos",
+    "handoffToSeller",
+  ]);
+  if (uiAlreadyRendered && looksLikeMarkdownCatalog(text)) return false;
+  return true;
+}
+
 function ToolBlocks({ invocations }: { invocations?: ToolInvocation[] }) {
   if (!invocations?.length) return null;
   return (
-    <div className="mt-2 space-y-2">
+    <div className="space-y-2">
       {invocations.map((inv, idx) => {
         if (inv.state !== "result") {
           return (
@@ -164,30 +193,42 @@ export function AssistantWidget() {
                   </div>
                 )}
 
-                {messages.map((m) => (
-                  <div
-                    key={m.id}
-                    className={cn(
-                      "max-w-[92%] rounded-2xl px-3 py-2 text-sm leading-relaxed",
-                      m.role === "user"
-                        ? "ml-auto bg-accent text-accent-ink"
-                        : "bg-surface text-ink"
-                    )}
-                  >
-                    {m.content}
-                    {m.role === "assistant" && (
-                      <ToolBlocks
-                        invocations={
-                          (
-                            m as {
-                              toolInvocations?: ToolInvocation[];
-                            }
-                          ).toolInvocations
-                        }
-                      />
-                    )}
-                  </div>
-                ))}
+                {messages.map((m) => {
+                  const invocations =
+                    m.role === "assistant"
+                      ? (
+                          m as {
+                            toolInvocations?: ToolInvocation[];
+                          }
+                        ).toolInvocations
+                      : undefined;
+                  const showText =
+                    m.role === "user" ||
+                    shouldShowAssistantText(m.content, invocations);
+
+                  return (
+                    <div
+                      key={m.id}
+                      className={cn(
+                        "max-w-[92%] rounded-2xl px-3 py-2 text-sm leading-relaxed",
+                        m.role === "user"
+                          ? "ml-auto bg-accent text-accent-ink"
+                          : "bg-surface text-ink"
+                      )}
+                    >
+                      <div className="space-y-2">
+                        {showText ? (
+                          <p className="whitespace-pre-wrap break-words">
+                            {m.content}
+                          </p>
+                        ) : null}
+                        {m.role === "assistant" && (
+                          <ToolBlocks invocations={invocations} />
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
                 {isLoading && (
                   <p className="text-xs text-ink-subtle">Digitando…</p>
                 )}
