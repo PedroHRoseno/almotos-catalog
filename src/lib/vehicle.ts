@@ -6,6 +6,13 @@ export function formatKm(km: number) {
   return `${new Intl.NumberFormat("pt-BR").format(km)} km`;
 }
 
+export function formatBRL(value: number) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value);
+}
+
 function hexToRgb(hex: string) {
   const clean = hex.replace("#", "");
   const full =

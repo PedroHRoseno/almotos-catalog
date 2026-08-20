@@ -9,7 +9,8 @@ import type { PublicVehicle } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { buildWhatsAppLink } from "@/lib/api";
-import { describeColor, formatKm, vehicleImages } from "@/lib/vehicle";
+import { describeColor, formatBRL, formatKm, vehicleImages } from "@/lib/vehicle";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 type VehicleCardProps = {
@@ -164,6 +165,22 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
             {color.label}
           </span>
         </div>
+
+        {vehicle.suggestedPrice != null && (
+          <p className="font-display text-lg font-extrabold tabular-nums text-white">
+            {formatBRL(vehicle.suggestedPrice)}
+          </p>
+        )}
+
+        {vehicle.tags && vehicle.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {vehicle.tags.slice(0, 3).map((tag) => (
+              <Badge key={tag} variant="glass">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        )}
 
         <Button
           asChild

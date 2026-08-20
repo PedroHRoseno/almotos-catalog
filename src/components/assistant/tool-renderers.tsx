@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { MessageCircle } from "lucide-react";
 import { buildWhatsAppLink } from "@/lib/api";
-import { describeColor, formatKm } from "@/lib/vehicle";
+import { describeColor, formatBRL, formatKm } from "@/lib/vehicle";
 import { cn } from "@/lib/utils";
 
 type MiniVehicle = {
@@ -15,6 +15,8 @@ type MiniVehicle = {
   colorLabel?: string;
   kilometersDriven: number;
   imageUrl?: string | null;
+  suggestedPrice?: number | null;
+  tags?: string[];
 };
 
 export function VehicleMiniGrid({ vehicles }: { vehicles: MiniVehicle[] }) {
@@ -57,6 +59,7 @@ export function VehicleMiniGrid({ vehicles }: { vehicles: MiniVehicle[] }) {
               <p className="text-xs text-ink-subtle">
                 {v.year} · {formatKm(v.kilometersDriven)}
                 {color.label ? ` · ${color.label}` : ""}
+                {v.suggestedPrice != null ? ` · ${formatBRL(v.suggestedPrice)}` : ""}
               </p>
             </div>
           </Link>

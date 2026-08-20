@@ -5,9 +5,10 @@ import { MessageCircle } from "lucide-react";
 import { SiteHeader, shellClass } from "@/components/site-header";
 import { VehicleGallery } from "@/components/vehicle-gallery";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { getCatalogVehicle, getCatalogVehicles } from "@/lib/catalog";
 import { buildWhatsAppLink } from "@/lib/api";
-import { describeColor, formatKm, vehicleImages, vehicleTitle } from "@/lib/vehicle";
+import { describeColor, formatBRL, formatKm, vehicleImages, vehicleTitle } from "@/lib/vehicle";
 import { cn } from "@/lib/utils";
 
 type PageProps = { params: { slug: string } };
@@ -64,6 +65,15 @@ export default async function MotoPage({ params }: PageProps) {
     },
     image: images,
     description: vehicle.description || undefined,
+    offers:
+      vehicle.suggestedPrice != null
+        ? {
+            "@type": "Offer",
+            priceCurrency: "BRL",
+            price: vehicle.suggestedPrice,
+            availability: "https://schema.org/InStock",
+          }
+        : undefined,
   };
 
   return (
@@ -99,6 +109,18 @@ export default async function MotoPage({ params }: PageProps) {
               <span aria-hidden>·</span>
               <span>{color.label}</span>
             </div>
+            {vehicle.suggestedPrice != null ? (
+              <p className="font-display text-3xl font-extrabold tabular-nums text-ink">
+                {formatBRL(vehicle.suggestedPrice)}
+              </p>
+            ) : null}
+            {vehicle.tags && vehicle.tags.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {vehicle.tags.map((tag) => (
+                  <Badge key={tag}>{tag}</Badge>
+                ))}
+              </div>
+            ) : null}
             {vehicle.description ? (
               <p className="text-base leading-relaxed text-ink-muted">
                 {vehicle.description}
