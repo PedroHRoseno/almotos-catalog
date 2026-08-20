@@ -14,7 +14,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-ink text-canvas hover:bg-white shadow-[0_1px_0_0_rgba(255,255,255,0.15)_inset]",
+          "bg-ink text-canvas hover:opacity-90 shadow-[0_1px_0_0_rgba(255,255,255,0.12)_inset]",
         accent:
           "bg-accent text-accent-ink hover:bg-accent-hover shadow-[0_8px_24px_-12px_var(--color-accent)]",
         outline:

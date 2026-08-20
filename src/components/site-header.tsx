@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { buildWhatsAppLink } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -27,17 +28,20 @@ export function SiteHeader() {
           />
         </Link>
 
-        <Button asChild variant="outline" size="sm" className="shrink-0">
-          <a
-            href={buildWhatsAppLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <MessageCircle />
-            <span className="hidden sm:inline">Falar com a loja</span>
-            <span className="sm:hidden">WhatsApp</span>
-          </a>
-        </Button>
+        <div className="flex shrink-0 items-center gap-2">
+          <ThemeToggle />
+          <Button asChild variant="outline" size="sm" className="shrink-0">
+            <a
+              href={buildWhatsAppLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle />
+              <span className="hidden sm:inline">Falar com a loja</span>
+              <span className="sm:hidden">WhatsApp</span>
+            </a>
+          </Button>
+        </div>
       </div>
     </header>
   );

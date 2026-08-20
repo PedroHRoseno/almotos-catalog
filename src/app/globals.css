@@ -1,36 +1,51 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  /* Superfícies */
-  --color-canvas: #08080a;
-  --color-canvas-soft: #0d0d11;
-  --color-surface: #131317;
-  --color-surface-hover: #1a1a20;
-  --color-line: #26262e;
-  --color-line-soft: #1b1b21;
-
-  /* Texto */
-  --color-ink: #f6f6f8;
-  --color-ink-muted: #a2a2ad;
-  --color-ink-subtle: #6f6f7a;
-
-  /* Acento */
-  --color-accent: #ff6a2b;
-  --color-accent-hover: #ff8149;
-  --color-accent-ink: #180a03;
+  --color-canvas: var(--canvas);
+  --color-canvas-soft: var(--canvas-soft);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-accent: #eb0b0b;
+  --color-accent-hover: #c90a0a;
+  --color-accent-ink: #ffffff;
   --color-whatsapp: #25d366;
   --color-whatsapp-hover: #1fbb59;
-
-  /* Tipografia */
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-syne), var(--font-dm-sans), ui-sans-serif, sans-serif;
-
-  /* Raio */
   --radius-card: 1.5rem;
-
-  /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --animate-shimmer: shimmer 2s infinite;
+}
+
+:root {
+  --canvas: #f4f4f6;
+  --canvas-soft: #ececf0;
+  --surface: #ffffff;
+  --surface-hover: #f0f0f3;
+  --line: #e2e2e8;
+  --line-soft: #ececf0;
+  --ink: #141418;
+  --ink-muted: #5c5c66;
+  --ink-subtle: #8a8a94;
+}
+
+html.dark {
+  --canvas: #08080a;
+  --canvas-soft: #0d0d11;
+  --surface: #131317;
+  --surface-hover: #1a1a20;
+  --line: #26262e;
+  --line-soft: #1b1b21;
+  --ink: #f6f6f8;
+  --ink-muted: #a2a2ad;
+  --ink-subtle: #6f6f7a;
 }
 
 @keyframes shimmer {
@@ -41,6 +56,10 @@
 
 @layer base {
   html {
+    color-scheme: light;
+  }
+
+  html.dark {
     color-scheme: dark;
   }
 
@@ -63,7 +82,6 @@
   }
 }
 
-/* Trilho de chips horizontal sem barra de rolagem visível */
 @utility no-scrollbar {
   scrollbar-width: none;
 
@@ -72,7 +90,6 @@
   }
 }
 
-/* Brilho ambiente do hero — evita o visual "fundo chapado" de dashboard */
 @utility ambient-glow {
   background-image: radial-gradient(
     60% 55% at 50% 0%,

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Syne } from "next/font/google";
 import { AssistantWidget } from "@/components/assistant/assistant-widget";
+import { ThemeProvider } from "@/components/theme-provider";
+import { THEME_BOOTSTRAP } from "@/lib/theme";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -34,7 +36,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#08080a",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f4f4f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#08080a" },
+  ],
 };
 
 export default function RootLayout({
@@ -45,11 +50,17 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
+      suppressHydrationWarning
       className={`${dmSans.variable} ${syne.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
+      </head>
       <body className="min-h-full flex flex-col bg-canvas text-ink">
-        {children}
-        <AssistantWidget />
+        <ThemeProvider>
+          {children}
+          <AssistantWidget />
+        </ThemeProvider>
       </body>
     </html>
   );
