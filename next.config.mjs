@@ -2,7 +2,10 @@
 const nextConfig = {
   images: {
     remotePatterns: [
-      // S3 (virtual-hosted e path-style), e CDN comum (CloudFront)
+      // Virtual-hosted clássico: bucket.s3.amazonaws.com (uploads Kotlin)
+      { protocol: "https", hostname: "*.s3.amazonaws.com" },
+      // Regional FastAPI: bucket.s3.us-east-1.amazonaws.com
+      { protocol: "https", hostname: "*.s3.*.amazonaws.com" },
       { protocol: "https", hostname: "**.amazonaws.com" },
       { protocol: "https", hostname: "**.amazonaws.com.cn" },
       { protocol: "https", hostname: "**.cloudfront.net" },
@@ -12,4 +15,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-

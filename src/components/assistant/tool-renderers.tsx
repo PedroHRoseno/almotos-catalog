@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { CatalogImage } from "@/components/ui/catalog-image";
 import { MessageCircle } from "lucide-react";
 import { buildWhatsAppLink } from "@/lib/api";
 import { describeColor, formatBRL, formatKm } from "@/lib/vehicle";
@@ -40,7 +40,7 @@ export function VehicleMiniGrid({ vehicles }: { vehicles: MiniVehicle[] }) {
           >
             <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-canvas-soft">
               {v.imageUrl ? (
-                <Image
+                <CatalogImage
                   src={v.imageUrl}
                   alt={`${v.brand} ${v.model}`}
                   fill
@@ -88,7 +88,7 @@ export function PhotoStrip({
             key={src}
             className="relative h-24 w-32 shrink-0 overflow-hidden rounded-xl border border-line-soft"
           >
-            <Image src={src} alt="" fill className="object-cover" sizes="128px" />
+            <CatalogImage src={src} alt="" fill className="object-cover" sizes="128px" />
           </div>
         ))}
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { CatalogImage } from "@/components/ui/catalog-image";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
@@ -69,7 +69,7 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
               {!loadedSlides[idx] && (
                 <div className="absolute inset-0 z-10 animate-pulse bg-surface" />
               )}
-              <Image
+              <CatalogImage
                 src={src}
                 alt={`${vehicle.brand} ${vehicle.model} — foto ${idx + 1}`}
                 fill

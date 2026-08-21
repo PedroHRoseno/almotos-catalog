@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { CatalogImage } from "@/components/ui/catalog-image";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -41,7 +41,7 @@ export function VehicleGallery({
               className="relative aspect-[4/5] min-w-0 flex-[0_0_100%] sm:aspect-[16/10]"
               key={`${src}-${idx}`}
             >
-              <Image
+              <CatalogImage
                 src={src}
                 alt={`${alt} — foto ${idx + 1}`}
                 fill
