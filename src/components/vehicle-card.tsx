@@ -25,9 +25,18 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
   const color = describeColor(vehicle.color);
 
   const waLink = useMemo(
-    () => buildWhatsAppLink({ model: vehicle.model }),
-    [vehicle.model]
+    () =>
+      buildWhatsAppLink({
+        model: vehicle.model,
+        suggestedPrice: vehicle.suggestedPrice,
+      }),
+    [vehicle.model, vehicle.suggestedPrice]
   );
+  const hasPrice = vehicle.suggestedPrice != null;
+  const ctaLabel = hasPrice ? "Tenho interesse" : "Consultar preço";
+  const ctaAria = hasPrice
+    ? `Tenho interesse na ${vehicle.brand} ${vehicle.model} no WhatsApp`
+    : `Consultar preço da ${vehicle.brand} ${vehicle.model} no WhatsApp`;
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: hasMultiple });
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -139,11 +148,11 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
       )}
 
       <div className="absolute inset-x-0 bottom-0 z-20 space-y-3 p-4 sm:p-5">
-        <p className="font-display text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
+        <p className="font-display text-xs font-semibold uppercase tracking-[0.12em] text-accent">
           {vehicle.brand}
         </p>
 
-        <h3 className="font-display text-xl font-extrabold leading-tight tracking-tight text-white sm:text-2xl">
+        <h3 className="font-sans text-xl font-bold leading-tight tracking-tight text-white sm:text-2xl">
           <Link href={`/motos/${vehicle.slug}`} className="hover:underline">
             {vehicle.model}
           </Link>
@@ -167,7 +176,7 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
         </div>
 
         {vehicle.suggestedPrice != null && (
-          <p className="font-display text-lg font-extrabold tabular-nums text-white">
+          <p className="font-sans text-xl font-bold tabular-nums text-white sm:text-2xl">
             {formatBRL(vehicle.suggestedPrice)}
           </p>
         )}
@@ -191,10 +200,10 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Consultar preço da ${vehicle.brand} ${vehicle.model} no WhatsApp`}
+            aria-label={ctaAria}
           >
             <MessageCircle />
-            Consultar preço
+            {ctaLabel}
           </a>
         </Button>
       </div>

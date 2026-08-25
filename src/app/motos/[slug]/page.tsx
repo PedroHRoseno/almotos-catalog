@@ -33,7 +33,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${title} | AL Motos`,
     description:
       vehicle.description ||
-      `${title} disponível na Al Motos em Caruaru. Consulte preço no WhatsApp.`,
+      (vehicle.suggestedPrice != null
+        ? `${title} disponível na Al Motos em Caruaru. Financiamento em até 48x.`
+        : `${title} disponível na Al Motos em Caruaru. Consulte preço no WhatsApp.`),
     openGraph: {
       title,
       description: "Estoque real da Al Motos · Caruaru/PE",
@@ -49,7 +51,11 @@ export default async function MotoPage({ params }: PageProps) {
   const title = vehicleTitle(vehicle);
   const color = describeColor(vehicle.colorLabel || vehicle.color);
   const images = vehicleImages(vehicle);
-  const wa = buildWhatsAppLink({ model: `${vehicle.brand} ${vehicle.model}` });
+  const wa = buildWhatsAppLink({
+    model: `${vehicle.brand} ${vehicle.model}`,
+    suggestedPrice: vehicle.suggestedPrice,
+  });
+  const hasPrice = vehicle.suggestedPrice != null;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -96,10 +102,10 @@ export default async function MotoPage({ params }: PageProps) {
           <VehicleGallery images={images} alt={title} />
 
           <div className="space-y-5">
-            <p className="font-display text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+            <p className="font-display text-xs font-semibold uppercase tracking-[0.12em] text-accent">
               {vehicle.brand}
             </p>
-            <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink">
+            <h1 className="font-sans text-4xl font-bold tracking-tight text-ink">
               {vehicle.model}
             </h1>
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-ink-muted">
@@ -110,7 +116,7 @@ export default async function MotoPage({ params }: PageProps) {
               <span>{color.label}</span>
             </div>
             {vehicle.suggestedPrice != null ? (
-              <p className="font-display text-3xl font-extrabold tabular-nums text-ink">
+              <p className="font-sans text-3xl font-bold tabular-nums text-ink">
                 {formatBRL(vehicle.suggestedPrice)}
               </p>
             ) : null}
@@ -127,14 +133,15 @@ export default async function MotoPage({ params }: PageProps) {
               </p>
             ) : (
               <p className="text-base leading-relaxed text-ink-muted">
-                Moto selecionada pela Al Motos em Caruaru. Preço sob consulta —
-                financiamento em até 48x e cartão em até 18x.
+                {hasPrice
+                  ? "Moto selecionada pela Al Motos em Caruaru. Financiamento em até 48x e cartão em até 18x."
+                  : "Moto selecionada pela Al Motos em Caruaru. Preço sob consulta — financiamento em até 48x e cartão em até 18x."}
               </p>
             )}
             <Button asChild variant="whatsapp" className="w-full min-h-12">
               <a href={wa} target="_blank" rel="noopener noreferrer">
                 <MessageCircle />
-                Consultar preço no WhatsApp
+                {hasPrice ? "Tenho interesse no WhatsApp" : "Consultar preço no WhatsApp"}
               </a>
             </Button>
           </div>

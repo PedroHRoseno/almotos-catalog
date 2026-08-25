@@ -53,7 +53,7 @@ export function VehicleMiniGrid({ vehicles }: { vehicles: MiniVehicle[] }) {
               <p className="truncate text-[11px] font-semibold uppercase tracking-wider text-accent">
                 {v.brand}
               </p>
-              <p className="truncate font-display text-sm font-bold text-ink">
+              <p className="truncate font-sans text-sm font-bold text-ink">
                 {v.model}
               </p>
               <p className="text-xs text-ink-subtle">

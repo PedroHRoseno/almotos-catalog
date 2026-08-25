@@ -158,7 +158,7 @@ export function AssistantWidget() {
                     Assistente Al Motos
                   </p>
                   <p className="text-xs text-ink-subtle">
-                    Estoque real · sem preço no chat
+                    Estoque real · preço da vitrine
                   </p>
                 </div>
                 <Button
@@ -175,8 +175,9 @@ export function AssistantWidget() {
                 {messages.length === 0 && (
                   <div className="space-y-3">
                     <p className="text-sm text-ink-muted">
-                      Diga a marca, a cor ou o uso. Eu busco no estoque e, se
-                      quiser preço, te passo para um vendedor.
+                      Diga a marca, a cor ou o uso. Eu busco no estoque com o
+                      preço da vitrine e, se quiser condições, te passo para um
+                      vendedor.
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {SUGGESTIONS.map((text) => (
