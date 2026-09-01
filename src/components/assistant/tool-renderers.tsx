@@ -2,10 +2,7 @@
 
 import Link from "next/link";
 import { CatalogImage } from "@/components/ui/catalog-image";
-import { MessageCircle } from "lucide-react";
-import { buildWhatsAppLink } from "@/lib/api";
 import { describeColor, formatBRL, formatKm } from "@/lib/vehicle";
-import { cn } from "@/lib/utils";
 
 type MiniVehicle = {
   slug: string;
@@ -98,47 +95,16 @@ export function PhotoStrip({
 
 export function HandoffCard({
   message,
-  links,
 }: {
   message?: string;
   links?: { label: string; url: string }[];
 }) {
-  if (!links?.length) {
-    return (
-      <a
-        href={buildWhatsAppLink()}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 rounded-full bg-whatsapp px-4 py-2 text-sm font-semibold text-[#04180c]"
-      >
-        <MessageCircle className="size-4" />
-        Falar com um vendedor
-      </a>
-    );
-  }
-
   return (
     <div className="space-y-2 rounded-2xl border border-line-soft bg-surface p-3">
-      {message ? (
-        <p className="text-sm text-ink-muted">{message}</p>
-      ) : null}
-      <div className="flex flex-col gap-2">
-        {links.map((link) => (
-          <a
-            key={link.url}
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              "inline-flex items-center justify-center gap-2 rounded-full bg-whatsapp px-4 py-2",
-              "text-sm font-semibold text-[#04180c] hover:bg-whatsapp-hover"
-            )}
-          >
-            <MessageCircle className="size-4" />
-            {link.label}
-          </a>
-        ))}
-      </div>
+      <p className="text-sm text-ink-muted">
+        {message ||
+          "Um especialista da AL Motos vai continuar exatamente nesta conversa."}
+      </p>
     </div>
   );
 }
