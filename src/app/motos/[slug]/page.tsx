@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MessageCircle } from "lucide-react";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader, shellClass } from "@/components/site-header";
 import { VehicleGallery } from "@/components/vehicle-gallery";
 import { Button } from "@/components/ui/button";
@@ -147,6 +148,7 @@ export default async function MotoPage({ params }: PageProps) {
           </div>
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

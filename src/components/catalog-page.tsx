@@ -6,6 +6,7 @@ import { fetchPublicVehicles } from "@/lib/api";
 import type { PublicVehicle } from "@/lib/types";
 import { ALL_BRANDS, BrandFilter } from "@/components/brand-filter";
 import { CatalogHero } from "@/components/catalog-hero";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader, shellClass } from "@/components/site-header";
 import { VehicleCard } from "@/components/vehicle-card";
 import { CatalogGridSkeleton } from "@/components/vehicle-card-skeleton";
@@ -142,17 +143,7 @@ export function CatalogPage({
         )}
       </main>
 
-      <footer className="border-t border-line-soft/60">
-        <div
-          className={cn(
-            shellClass,
-            "flex flex-col gap-1 py-8 text-sm text-ink-subtle sm:flex-row sm:items-center sm:justify-between"
-          )}
-        >
-          <span>Al Motos · Rua Visconde de Inhaúma, 725 — Caruaru/PE</span>
-          <span>Financiamento em até 48x · Cartão em até 18x</span>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
