@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     locale: "pt_BR",
   },
   other: {
-    "facebook-domain-verification": "05d6ohif4f5hdspbg6oz3g43w7n0yf",
+    "facebook-domain-verification": "ihotlngh1sp8kfoyf45vqcw1d036qp",
   },
 };
 
