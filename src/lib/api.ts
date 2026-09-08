@@ -12,11 +12,14 @@ export async function fetchPublicVehicles(): Promise<PublicVehicle[]> {
 export function buildWhatsAppLink(params: {
   model?: string;
   suggestedPrice?: number | null;
+  text?: string;
 } = {}) {
-  let text = "Olá! Vi o catálogo da Al Motos e gostaria de falar com um vendedor.";
-  if (params.model && params.suggestedPrice != null) {
+  let text =
+    params.text ??
+    "Olá! Vi o catálogo da Al Motos e gostaria de falar com um vendedor.";
+  if (!params.text && params.model && params.suggestedPrice != null) {
     text = `Olá! Vi a ${params.model} no catálogo por ${formatBRL(params.suggestedPrice)} e gostaria de saber as condições.`;
-  } else if (params.model) {
+  } else if (!params.text && params.model) {
     text = `Olá! Vi a ${params.model} no catálogo e gostaria de saber o preço e condições de financiamento.`;
   }
   const base =

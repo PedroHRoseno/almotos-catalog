@@ -3,11 +3,23 @@ import { getCatalogVehicles } from "@/lib/catalog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = (
-    process.env.NEXT_PUBLIC_SITE_URL || "https://catalogo.almotoscaruaru.com.br"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://almotoscaruaru.com.br"
   ).replace(/\/+$/, "");
 
   const entries: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date(), changeFrequency: "daily", priority: 1 },
+    {
+      url: `${base}/estoque`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${base}/privacidade`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ];
 
   try {

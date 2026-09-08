@@ -7,7 +7,7 @@ export default function NotFound() {
       <p className="text-sm text-ink-muted">
         Esse anúncio saiu do estoque ou o link expirou.
       </p>
-      <a href="/" className="text-sm text-accent hover:underline">
+      <a href="/estoque" className="text-sm text-accent hover:underline">
         Voltar ao catálogo
       </a>
     </div>

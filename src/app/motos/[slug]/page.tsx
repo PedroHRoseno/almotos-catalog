@@ -92,7 +92,7 @@ export default async function MotoPage({ params }: PageProps) {
       />
       <main className={cn(shellClass, "flex-1 py-8 sm:py-12")}>
         <p className="text-sm text-ink-subtle">
-          <Link href="/" className="hover:text-ink">
+          <Link href="/estoque" className="hover:text-ink">
             Catálogo
           </Link>
           <span className="mx-2">/</span>

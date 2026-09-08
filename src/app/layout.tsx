@@ -33,6 +33,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
   },
+  other: {
+    "facebook-domain-verification": "05d6ohif4f5hdspbg6oz3g43w7n0yf",
+  },
 };
 
 export const viewport: Viewport = {

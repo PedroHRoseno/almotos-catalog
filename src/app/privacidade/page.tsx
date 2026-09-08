@@ -17,7 +17,7 @@ export default function PrivacidadePage() {
       <main className={cn(shellClass, "flex-1 py-10 sm:py-14")}>
         <p className="text-sm text-ink-subtle">
           <Link href="/" className="hover:text-ink">
-            Catálogo
+            Início
           </Link>
           <span className="mx-2">/</span>
           Privacidade

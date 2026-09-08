@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, RotateCw, SearchX } from "lucide-react";
+import { AlertTriangle, RotateCw, Search, SearchX } from "lucide-react";
 import { fetchPublicVehicles } from "@/lib/api";
 import type { PublicVehicle } from "@/lib/types";
 import { ALL_BRANDS, BrandFilter } from "@/components/brand-filter";
@@ -12,6 +12,8 @@ import { VehicleCard } from "@/components/vehicle-card";
 import { CatalogGridSkeleton } from "@/components/vehicle-card-skeleton";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { Button } from "@/components/ui/button";
+import { CATALOG_PATH } from "@/lib/routes";
+import { matchesVehicleQuery } from "@/lib/vehicle";
 import { cn } from "@/lib/utils";
 
 type LoadState =
@@ -21,8 +23,10 @@ type LoadState =
 
 export function CatalogPage({
   initialVehicles,
+  initialQuery = "",
 }: {
   initialVehicles?: PublicVehicle[];
+  initialQuery?: string;
 }) {
   const [state, setState] = useState<LoadState>(
     initialVehicles
@@ -66,10 +70,12 @@ export function CatalogPage({
 
   const filtered = useMemo(() => {
     if (state.status !== "ready") return [];
-    return brand === ALL_BRANDS
-      ? state.vehicles
-      : state.vehicles.filter((v) => v.brand === brand);
-  }, [state, brand]);
+    const byBrand =
+      brand === ALL_BRANDS
+        ? state.vehicles
+        : state.vehicles.filter((v) => v.brand === brand);
+    return byBrand.filter((v) => matchesVehicleQuery(v, initialQuery));
+  }, [state, brand, initialQuery]);
 
   const total = state.status === "ready" ? state.vehicles.length : null;
 
@@ -79,9 +85,38 @@ export function CatalogPage({
       <CatalogHero total={total} />
 
       <main className={cn(shellClass, "flex-1 py-8 sm:py-10 lg:py-12")}>
-        {state.status === "ready" && brands.length > 1 && (
-          <div className="mb-8 space-y-3">
+        <div className="mb-8 space-y-4">
+          <form
+            action={CATALOG_PATH}
+            method="get"
+            className="flex flex-col gap-2 sm:flex-row sm:items-center"
+          >
+            <label htmlFor="catalog-search" className="sr-only">
+              Buscar modelo
+            </label>
+            <input
+              id="catalog-search"
+              type="search"
+              name="q"
+              defaultValue={initialQuery}
+              placeholder="Ex.: Bros 160"
+              autoComplete="off"
+              enterKeyHint="search"
+              className={cn(
+                "h-11 w-full min-w-0 flex-1 rounded-full border border-line bg-surface px-4 text-sm text-ink",
+                "placeholder:text-ink-subtle",
+                "focus-visible:outline-none"
+              )}
+            />
+            <Button type="submit" className="min-h-11 w-full sm:w-auto">
+              <Search />
+              Buscar
+            </Button>
+          </form>
+          {state.status === "ready" && brands.length > 1 && (
             <BrandFilter brands={brands} value={brand} onChange={setBrand} />
+          )}
+          {state.status === "ready" && (
             <p className="text-sm text-ink-subtle">
               Mostrando{" "}
               <span className="tabular-nums text-ink-muted">
@@ -89,9 +124,10 @@ export function CatalogPage({
               </span>{" "}
               {filtered.length === 1 ? "moto" : "motos"}
               {brand !== ALL_BRANDS && ` · ${brand}`}
+              {initialQuery.trim() && ` · “${initialQuery.trim()}”`}
             </p>
-          </div>
-        )}
+          )}
+        </div>
 
         {state.status === "loading" && <CatalogGridSkeleton count={6} />}
 
@@ -113,17 +149,15 @@ export function CatalogPage({
           <div className="mx-auto max-w-md rounded-card border border-line bg-surface p-8 text-center">
             <SearchX className="mx-auto size-8 text-ink-subtle" />
             <h2 className="mt-4 font-display text-lg font-bold text-ink">
-              Nenhuma moto nessa marca
+              {initialQuery.trim()
+                ? `Nenhuma moto para “${initialQuery.trim()}”`
+                : "Nenhuma moto nessa marca"}
             </h2>
             <p className="mt-2 text-sm text-ink-muted">
-              Ajuste o filtro para ver todo o estoque disponível.
+              Ajuste a busca ou o filtro para ver o estoque disponível.
             </p>
-            <Button
-              variant="outline"
-              className="mt-6"
-              onClick={() => setBrand(ALL_BRANDS)}
-            >
-              Ver todas as motos
+            <Button asChild variant="outline" className="mt-6">
+              <a href={CATALOG_PATH}>Ver todas as motos</a>
             </Button>
           </div>
         )}

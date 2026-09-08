@@ -102,3 +102,19 @@ export function vehicleImages(vehicle: PublicVehicle) {
 export function vehicleTitle(vehicle: PublicVehicle) {
   return `${vehicle.brand} ${vehicle.model}`.replace(/\s+/g, " ").trim();
 }
+
+function foldQuery(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .trim();
+}
+
+export function matchesVehicleQuery(vehicle: PublicVehicle, query: string) {
+  const needle = foldQuery(query);
+  if (!needle) return true;
+  return foldQuery(
+    `${vehicle.brand} ${vehicle.model} ${vehicle.year}`
+  ).includes(needle);
+}
