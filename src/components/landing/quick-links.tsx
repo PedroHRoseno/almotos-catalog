@@ -1,6 +1,6 @@
 import { Calculator, MapPin, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { COMPANY_LINKS } from "@/components/site-footer";
+import { COMPANY_LINKS } from "@/lib/company";
 import { buildWhatsAppLink } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { shellClass } from "@/components/site-header";
