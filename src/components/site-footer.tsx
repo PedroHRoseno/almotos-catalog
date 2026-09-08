@@ -18,11 +18,7 @@ export const COMPANY = {
 export const COMPANY_LINKS = {
   email: `mailto:${COMPANY.email.toLowerCase()}`,
   phone: "tel:+558181146588",
-  maps:
-    "https://www.google.com/maps/search/?api=1&query=" +
-    encodeURIComponent(
-      `${COMPANY.street}, ${COMPANY.neighborhood}, ${COMPANY.city}, CEP ${COMPANY.cep}`
-    ),
+  maps: "https://maps.app.goo.gl/xWMXn8PEC9ZRkjkHA",
 } as const;
 
 export function SiteFooter() {
