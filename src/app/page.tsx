@@ -7,7 +7,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "AL Motos | Motos seminovas em Caruaru",
   description:
-    "A sua próxima moto com procedência e garantia está aqui. Motos revisadas, garantia de motor e câmbio e aceitamos sua moto na troca.",
+    "A sua próxima moto com procedência e garantia está aqui. Motos revisadas, garantia de motor e aceitamos sua moto na troca.",
 };
 
 export default async function Home() {

@@ -10,7 +10,7 @@ const BADGES = [
   },
   {
     icon: ShieldCheck,
-    title: "Garantia de Motor e Câmbio",
+    title: "Garantia de Motor",
     detail: "Procedência conferida e garantia para você comprar com tranquilidade.",
   },
   {
