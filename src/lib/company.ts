@@ -7,11 +7,11 @@ export const COMPANY = {
   city: "Caruaru - PE",
   cep: "55.012-010",
   email: "ALMOTOSCARUARU@GMAIL.COM",
-  phone: "(81) 8114-6588",
+  phone: "(81) 92141-6069",
 } as const;
 
 export const COMPANY_LINKS = {
   email: `mailto:${COMPANY.email.toLowerCase()}`,
-  phone: "tel:+558181146588",
+  phone: "tel:+5581921416069",
   maps: "https://maps.app.goo.gl/xWMXn8PEC9ZRkjkHA",
 } as const;

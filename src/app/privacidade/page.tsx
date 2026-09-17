@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SiteFooter, COMPANY } from "@/components/site-footer";
+import { SiteFooter, COMPANY, COMPANY_LINKS } from "@/components/site-footer";
 import { SiteHeader, shellClass } from "@/components/site-header";
 import { cn } from "@/lib/utils";
 
@@ -136,7 +136,7 @@ export default function PrivacidadePage() {
               </a>{" "}
               ou pelo telefone{" "}
               <a
-                href="tel:+558181146588"
+                href={COMPANY_LINKS.phone}
                 className="text-ink underline-offset-4 hover:underline"
               >
                 {COMPANY.phone}
