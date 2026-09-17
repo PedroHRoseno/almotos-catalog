@@ -45,13 +45,15 @@ export function buildWhatsAppLink(params: {
   suggestedPrice?: number | null;
   text?: string;
 } = {}) {
+  // Evitar "vendedor"/"atendente"/"financiamento": o bot do Chatwoot faz handoff
+  // imediato nessas palavras. A abertura precisa deixar a IA buscar o estoque.
   let text =
     params.text ??
-    "Olá! Vi o catálogo da Al Motos e gostaria de falar com um vendedor.";
+    "Olá! Vi o catálogo da Al Motos e gostaria de ver as motos disponíveis.";
   if (!params.text && params.model && params.suggestedPrice != null) {
-    text = `Olá! Vi a ${params.model} no catálogo por ${formatBRL(params.suggestedPrice)} e gostaria de saber as condições.`;
+    text = `Olá! Vi a ${params.model} no catálogo da Al Motos por ${formatBRL(params.suggestedPrice)} e gostaria de saber se ainda está disponível.`;
   } else if (!params.text && params.model) {
-    text = `Olá! Vi a ${params.model} no catálogo e gostaria de saber o preço e condições de financiamento.`;
+    text = `Olá! Vi a ${params.model} no catálogo da Al Motos e gostaria de saber se ainda está disponível e qual o valor.`;
   }
   return `https://wa.me/${whatsappPhone()}?text=${encodeURIComponent(text)}`;
 }
