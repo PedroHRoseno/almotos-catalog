@@ -10,6 +10,8 @@ export const COMPANY = {
   phone: "(81) 92141-6069",
 } as const;
 
+/** tel: da ficha. O botão WhatsApp do catálogo usa NEXT_PUBLIC_WHATSAPP_URL. */
+
 export const COMPANY_LINKS = {
   email: `mailto:${COMPANY.email.toLowerCase()}`,
   phone: "tel:+5581921416069",

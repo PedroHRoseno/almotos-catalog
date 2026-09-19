@@ -1,6 +1,5 @@
 import type { PublicVehicle } from "@/lib/types";
 import { formatBRL } from "@/lib/vehicle";
-import { COMPANY_LINKS } from "@/lib/company";
 
 export async function fetchPublicVehicles(): Promise<PublicVehicle[]> {
   const res = await fetch("/api/catalog/vehicles", { cache: "no-store" });
@@ -14,12 +13,15 @@ function digitsOnly(value: string) {
   return value.replace(/\D/g, "");
 }
 
+/** Fallback se NEXT_PUBLIC_WHATSAPP_URL não estiver no deploy. */
+export const DEFAULT_WHATSAPP_E164 = "5581921416069";
+
 /**
- * Links únicos `api.whatsapp.com/message/CODE` (clique do Instagram) 404/400
- * se ganharem `text=` extra — e o código em si também pode expirar.
- * Extraímos o telefone de wa.me /send e caímos no número da loja.
+ * Número do CTA. Fonte: NEXT_PUBLIC_WHATSAPP_URL no deploy do catálogo (Vercel).
+ * Aceita https://wa.me/5581…, api.whatsapp.com/send?phone=… ou só dígitos.
+ * Links /message/CODE do Instagram não são usados — quebram com text=.
  */
-function whatsappPhone() {
+export function whatsappPhone() {
   const configured = process.env.NEXT_PUBLIC_WHATSAPP_URL?.trim();
   if (configured) {
     try {
@@ -37,7 +39,7 @@ function whatsappPhone() {
       if (raw.length >= 10 && raw.length <= 15) return raw;
     }
   }
-  return digitsOnly(COMPANY_LINKS.phone);
+  return DEFAULT_WHATSAPP_E164;
 }
 
 export function buildWhatsAppLink(params: {
