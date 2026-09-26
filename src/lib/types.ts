@@ -7,6 +7,10 @@ export type PublicVehicle = {
   colorLabel?: string;
   kilometersDriven: number;
   suggestedPrice?: number | null;
+  fipeValue?: number | null;
+  fipeDiscountPercentage?: number | null;
+  isBelowFipe?: boolean;
+  fipeSavingsAmount?: number | null;
   imageUrlList: string[];
   description?: string | null;
   catalogUrl?: string;

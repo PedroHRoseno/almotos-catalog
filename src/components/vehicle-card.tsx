@@ -9,7 +9,7 @@ import type { PublicVehicle } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { buildWhatsAppLink } from "@/lib/api";
-import { describeColor, formatBRL, formatKm, vehicleImages } from "@/lib/vehicle";
+import { describeColor, formatBRL, formatFipePercent, formatKm, vehicleImages } from "@/lib/vehicle";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -100,6 +100,17 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent opacity-95"
       />
+
+      {vehicle.isBelowFipe && vehicle.fipeDiscountPercentage != null && (
+        <span
+          className={cn(
+            "absolute left-3 z-30 rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-semibold text-white shadow-md",
+            hasMultiple ? "top-9" : "top-3"
+          )}
+        >
+          🔥 {formatFipePercent(vehicle.fipeDiscountPercentage)}% Abaixo da FIPE
+        </span>
+      )}
 
       {hasMultiple && (
         <div className="absolute inset-x-0 top-0 z-20 flex gap-1 p-3">

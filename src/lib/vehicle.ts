@@ -13,6 +13,13 @@ export function formatBRL(value: number) {
   }).format(value);
 }
 
+export function formatFipePercent(percentage: number) {
+  return new Intl.NumberFormat("pt-BR", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(Math.abs(percentage));
+}
+
 function hexToRgb(hex: string) {
   const clean = hex.replace("#", "");
   const full =

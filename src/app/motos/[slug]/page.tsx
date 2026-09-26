@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getCatalogVehicle, getCatalogVehicles } from "@/lib/catalog";
 import { buildWhatsAppLink } from "@/lib/api";
-import { describeColor, formatBRL, formatKm, vehicleImages, vehicleTitle } from "@/lib/vehicle";
+import { describeColor, formatBRL, formatFipePercent, formatKm, vehicleImages, vehicleTitle } from "@/lib/vehicle";
 import { cn } from "@/lib/utils";
 
 type PageProps = { params: { slug: string } };
@@ -120,6 +120,42 @@ export default async function MotoPage({ params }: PageProps) {
               <p className="font-sans text-3xl font-bold tabular-nums text-ink">
                 {formatBRL(vehicle.suggestedPrice)}
               </p>
+            ) : null}
+            {vehicle.fipeValue != null && vehicle.suggestedPrice != null ? (
+              <div className="space-y-3 rounded-card border border-line bg-surface p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-subtle">
+                  Comparação com a Tabela FIPE
+                </p>
+                <dl className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <dt className="text-xs text-ink-subtle">FIPE de referência</dt>
+                    <dd className="text-lg font-semibold tabular-nums text-ink">
+                      {formatBRL(vehicle.fipeValue)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs text-ink-subtle">Preço da loja</dt>
+                    <dd className="text-lg font-semibold tabular-nums text-ink">
+                      {formatBRL(vehicle.suggestedPrice)}
+                    </dd>
+                  </div>
+                </dl>
+                {vehicle.isBelowFipe &&
+                vehicle.fipeSavingsAmount != null &&
+                vehicle.fipeDiscountPercentage != null ? (
+                  <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                    {`Economia de ${formatBRL(vehicle.fipeSavingsAmount)} (${formatFipePercent(vehicle.fipeDiscountPercentage)}% abaixo da FIPE)`}
+                  </p>
+                ) : vehicle.fipeDiscountPercentage != null && vehicle.fipeDiscountPercentage > 3 ? (
+                  <p className="text-sm font-medium text-ink-muted">
+                    {formatFipePercent(vehicle.fipeDiscountPercentage)}% acima da Tabela FIPE
+                  </p>
+                ) : (
+                  <p className="text-sm font-medium text-ink-muted">
+                    Preço alinhado com a Tabela FIPE
+                  </p>
+                )}
+              </div>
             ) : null}
             {vehicle.tags && vehicle.tags.length > 0 ? (
               <div className="flex flex-wrap gap-2">
