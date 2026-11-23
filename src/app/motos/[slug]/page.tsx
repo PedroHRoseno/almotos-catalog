@@ -7,6 +7,8 @@ import { SiteHeader, shellClass } from "@/components/site-header";
 import { VehicleGallery } from "@/components/vehicle-gallery";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PromoBadge, PromoPrice } from "@/components/promo-price";
+import { formatDayMonth } from "@/lib/campaign";
 import { getCatalogVehicle, getCatalogVehicles } from "@/lib/catalog";
 import { buildWhatsAppLink } from "@/lib/api";
 import { describeColor, formatBRL, formatFipePercent, formatKm, vehicleImages, vehicleTitle } from "@/lib/vehicle";
@@ -52,9 +54,11 @@ export default async function MotoPage({ params }: PageProps) {
   const title = vehicleTitle(vehicle);
   const color = describeColor(vehicle.colorLabel || vehicle.color);
   const images = vehicleImages(vehicle);
+  const promotion = vehicle.promotion ?? null;
   const wa = buildWhatsAppLink({
     model: `${vehicle.brand} ${vehicle.model}`,
     suggestedPrice: vehicle.suggestedPrice,
+    promotionLabel: promotion?.label,
   });
   const hasPrice = vehicle.suggestedPrice != null;
 
@@ -79,6 +83,7 @@ export default async function MotoPage({ params }: PageProps) {
             priceCurrency: "BRL",
             price: vehicle.suggestedPrice,
             availability: "https://schema.org/InStock",
+            ...(promotion ? { priceValidUntil: promotion.endsOn } : {}),
           }
         : undefined,
   };
@@ -103,9 +108,12 @@ export default async function MotoPage({ params }: PageProps) {
           <VehicleGallery images={images} alt={title} />
 
           <div className="space-y-5">
-            <p className="font-display text-xs font-semibold uppercase tracking-[0.12em] text-accent">
-              {vehicle.brand}
-            </p>
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="font-display text-xs font-semibold uppercase tracking-[0.12em] text-accent">
+                {vehicle.brand}
+              </p>
+              {promotion && <PromoBadge promotion={promotion} />}
+            </div>
             <h1 className="font-sans text-4xl font-bold tracking-tight text-ink">
               {vehicle.model}
             </h1>
@@ -116,7 +124,15 @@ export default async function MotoPage({ params }: PageProps) {
               <span aria-hidden>·</span>
               <span>{color.label}</span>
             </div>
-            {vehicle.suggestedPrice != null ? (
+            {vehicle.suggestedPrice != null && promotion ? (
+              <div className="space-y-2">
+                <PromoPrice price={vehicle.suggestedPrice} promotion={promotion} tone="page" />
+                <p className="text-xs text-ink-subtle">
+                  Oferta do {promotion.campaignName} válida até {formatDayMonth(promotion.endsOn)} ou
+                  enquanto a moto estiver disponível. Financiamento sujeito a análise de crédito.
+                </p>
+              </div>
+            ) : vehicle.suggestedPrice != null ? (
               <p className="font-sans text-3xl font-bold tabular-nums text-ink">
                 {formatBRL(vehicle.suggestedPrice)}
               </p>

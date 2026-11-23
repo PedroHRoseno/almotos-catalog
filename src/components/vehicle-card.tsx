@@ -11,6 +11,8 @@ import { Card } from "@/components/ui/card";
 import { buildWhatsAppLink } from "@/lib/api";
 import { describeColor, formatBRL, formatFipePercent, formatKm, vehicleImages } from "@/lib/vehicle";
 import { Badge } from "@/components/ui/badge";
+import { PromoBadge, PromoPrice } from "@/components/promo-price";
+import { isBlackNovember } from "@/lib/campaign";
 import { cn } from "@/lib/utils";
 
 type VehicleCardProps = {
@@ -23,14 +25,18 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
   const images = vehicleImages(vehicle);
   const hasMultiple = images.length > 1;
   const color = describeColor(vehicle.color);
+  const promotion = vehicle.promotion ?? null;
+  const blackPromo = promotion != null && isBlackNovember(promotion.theme);
+  const showFipe = vehicle.isBelowFipe && vehicle.fipeDiscountPercentage != null;
 
   const waLink = useMemo(
     () =>
       buildWhatsAppLink({
         model: vehicle.model,
         suggestedPrice: vehicle.suggestedPrice,
+        promotionLabel: promotion?.label,
       }),
-    [vehicle.model, vehicle.suggestedPrice]
+    [vehicle.model, vehicle.suggestedPrice, promotion?.label]
   );
   const hasPrice = vehicle.suggestedPrice != null;
   const ctaLabel = hasPrice ? "Tenho interesse" : "Consultar preço";
@@ -65,7 +71,9 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
       className={cn(
         "group relative isolate aspect-[4/5] border-line-soft/80 bg-canvas-soft",
         "transition-[transform,border-color,box-shadow] duration-500 ease-out-expo",
-        "hover:-translate-y-1 hover:border-line hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.9)]"
+        "hover:-translate-y-1 hover:border-line hover:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.9)]",
+        blackPromo && "bn-promo-ring",
+        promotion && !blackPromo && "ring-2 ring-accent"
       )}
     >
       <div ref={emblaRef} className="absolute inset-0 overflow-hidden">
@@ -101,15 +109,20 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent opacity-95"
       />
 
-      {vehicle.isBelowFipe && vehicle.fipeDiscountPercentage != null && (
-        <span
+      {(promotion || showFipe) && (
+        <div
           className={cn(
-            "absolute left-3 z-30 rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-semibold text-white shadow-md",
+            "absolute left-3 z-30 flex flex-col items-start gap-1.5",
             hasMultiple ? "top-9" : "top-3"
           )}
         >
-          🔥 {formatFipePercent(vehicle.fipeDiscountPercentage)}% Abaixo da FIPE
-        </span>
+          {promotion && <PromoBadge promotion={promotion} />}
+          {showFipe && (
+            <span className="rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-semibold text-white shadow-md">
+              🔥 {formatFipePercent(vehicle.fipeDiscountPercentage as number)}% Abaixo da FIPE
+            </span>
+          )}
+        </div>
       )}
 
       {hasMultiple && (
@@ -186,11 +199,13 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
           </span>
         </div>
 
-        {vehicle.suggestedPrice != null && (
+        {vehicle.suggestedPrice != null && promotion ? (
+          <PromoPrice price={vehicle.suggestedPrice} promotion={promotion} tone="card" />
+        ) : vehicle.suggestedPrice != null ? (
           <p className="font-sans text-xl font-bold tabular-nums text-white sm:text-2xl">
             {formatBRL(vehicle.suggestedPrice)}
           </p>
-        )}
+        ) : null}
 
         {vehicle.tags && vehicle.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">

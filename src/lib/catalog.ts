@@ -1,4 +1,4 @@
-import type { PublicVehicle } from "@/lib/types";
+import type { PublicCampaign, PublicVehicle } from "@/lib/types";
 
 function slugify(value: string) {
   return value
@@ -76,4 +76,23 @@ export async function getCatalogVehicle(
 
   const vehicles = await getCatalogVehicles();
   return vehicles.find((v) => v.slug === slug) ?? null;
+}
+
+/** Campanha ativa (tema do site). Qualquer falha vira "sem campanha": o catálogo nunca quebra por isso. */
+export async function getActiveCampaign(): Promise<PublicCampaign | null> {
+  const ai = process.env.ALMOTOS_AI_URL?.replace(/\/+$/, "");
+  const base = ai
+    ? `${ai}/v1/campaign`
+    : process.env.NODE_ENV === "production"
+      ? null
+      : `${(process.env.KOTLIN_BASE_URL || "http://localhost:8080").replace(/\/+$/, "")}/api/public/campaign`;
+  if (!base) return null;
+  try {
+    const res = await fetch(base, { next: { revalidate: 60 } });
+    if (!res.ok) return null;
+    const data = (await res.json()) as PublicCampaign | null;
+    return data && typeof data.label === "string" ? data : null;
+  } catch {
+    return null;
+  }
 }

@@ -7,18 +7,20 @@ import { cn } from "@/lib/utils";
 import { shellClass } from "@/components/site-header";
 
 export function RecentArrivals({ vehicles }: { vehicles: PublicVehicle[] }) {
+  // Durante a campanha a API já entrega as motos em promoção primeiro.
+  const promo = vehicles.find((v) => v.promotion)?.promotion ?? null;
   return (
     <section className={cn(shellClass, "pb-12 sm:pb-16")} aria-labelledby="recent-heading">
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-            Vitrine
+            {promo ? promo.campaignName : "Vitrine"}
           </p>
           <h2
             id="recent-heading"
             className="mt-1 font-display text-2xl font-extrabold tracking-tight text-ink sm:text-3xl"
           >
-            Chegaram Recentemente
+            {promo ? `Ofertas do ${promo.label}` : "Chegaram Recentemente"}
           </h2>
         </div>
         {vehicles.length > 0 && (

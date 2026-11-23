@@ -45,6 +45,8 @@ export function whatsappPhone() {
 export function buildWhatsAppLink(params: {
   model?: string;
   suggestedPrice?: number | null;
+  /** Ex.: "Saldão" — a mensagem cita a campanha junto do preço promocional. */
+  promotionLabel?: string | null;
   text?: string;
 } = {}) {
   // Evitar "vendedor"/"atendente"/"financiamento": o bot do Chatwoot faz handoff
@@ -52,7 +54,9 @@ export function buildWhatsAppLink(params: {
   let text =
     params.text ??
     "Olá! Vi o catálogo da Al Motos e gostaria de ver as motos disponíveis.";
-  if (!params.text && params.model && params.suggestedPrice != null) {
+  if (!params.text && params.model && params.suggestedPrice != null && params.promotionLabel) {
+    text = `Olá! Vi a ${params.model} no ${params.promotionLabel} da Al Motos por ${formatBRL(params.suggestedPrice)} e gostaria de saber se ainda está disponível.`;
+  } else if (!params.text && params.model && params.suggestedPrice != null) {
     text = `Olá! Vi a ${params.model} no catálogo da Al Motos por ${formatBRL(params.suggestedPrice)} e gostaria de saber se ainda está disponível.`;
   } else if (!params.text && params.model) {
     text = `Olá! Vi a ${params.model} no catálogo da Al Motos e gostaria de saber se ainda está disponível e qual o valor.`;

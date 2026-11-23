@@ -48,6 +48,21 @@ html.dark {
   --ink-subtle: #6f6f7a;
 }
 
+/* Black November (kit em docs/CAMPAIGN_BLACK_NOVEMBER.md): dourado + carbono sobre o preto da marca. */
+:root {
+  --bn-gold: #d4a24c;
+  --bn-gold-light: #f0c46a;
+  --bn-gold-dark: #b8862f;
+}
+
+html[data-campaign-theme="BLACK_NOVEMBER"] .ambient-glow {
+  background-image: radial-gradient(
+    60% 55% at 50% 0%,
+    color-mix(in oklab, var(--bn-gold) 22%, transparent) 0%,
+    transparent 70%
+  );
+}
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);
@@ -106,4 +121,22 @@ html.dark {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+@utility bn-gold-text {
+  background-image: linear-gradient(180deg, var(--bn-gold-light) 0%, var(--bn-gold) 55%, var(--bn-gold-dark) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bn-carbon {
+  background-color: #09090b;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 6px);
+}
+
+@utility bn-promo-ring {
+  box-shadow: 0 0 0 2px var(--bn-gold), 0 24px 48px -28px color-mix(in oklab, var(--bn-gold) 60%, transparent);
 }

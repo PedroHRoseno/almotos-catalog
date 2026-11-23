@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Syne } from "next/font/google";
 import { AssistantWidget } from "@/components/assistant/assistant-widget";
+import { CampaignBanner } from "@/components/campaign-banner";
+import { getActiveCampaign } from "@/lib/catalog";
 import { ThemeProvider } from "@/components/theme-provider";
 import { THEME_BOOTSTRAP } from "@/lib/theme";
 import "./globals.css";
@@ -45,15 +47,17 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const campaign = await getActiveCampaign();
   return (
     <html
       lang="pt-BR"
       suppressHydrationWarning
+      data-campaign-theme={campaign?.theme}
       className={`${dmSans.variable} ${syne.variable} h-full antialiased`}
     >
       <head>
@@ -61,6 +65,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-canvas text-ink">
         <ThemeProvider>
+          {campaign && <CampaignBanner campaign={campaign} />}
           {children}
           <AssistantWidget />
         </ThemeProvider>
