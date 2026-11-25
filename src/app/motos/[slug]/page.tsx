@@ -187,8 +187,8 @@ export default async function MotoPage({ params }: PageProps) {
             ) : (
               <p className="text-base leading-relaxed text-ink-muted">
                 {hasPrice
-                  ? "Moto selecionada pela Al Motos em Caruaru. Financiamento em até 48x e cartão em até 18x."
-                  : "Moto selecionada pela Al Motos em Caruaru. Preço sob consulta — financiamento em até 48x e cartão em até 18x."}
+                  ? "Moto selecionada pela Al Motos em Caruaru. Financiamento em até 48x e cartão em até 21x."
+                  : "Moto selecionada pela Al Motos em Caruaru. Preço sob consulta — financiamento em até 48x e cartão em até 21x."}
               </p>
             )}
             <Button asChild variant="whatsapp" className="w-full min-h-12">

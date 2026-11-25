@@ -59,7 +59,7 @@ export function SiteFooter() {
         <div className="space-y-3 text-sm">
           <p className="font-medium text-ink">Informações</p>
           <p className="text-ink-subtle">
-            Financiamento em até 48x · Cartão em até 18x
+            Financiamento em até 48x · Cartão em até 21x
           </p>
           <Link
             href="/privacidade"
